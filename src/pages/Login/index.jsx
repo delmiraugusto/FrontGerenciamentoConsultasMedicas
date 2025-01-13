@@ -2,6 +2,7 @@ import { useState, useContext } from 'react';
 import { BsEye, BsEyeSlash } from "react-icons/bs";
 const foto = new URL("../../assets/iconHospital.png", import.meta.url);
 import { Form, InputGroup } from 'react-bootstrap';
+import apiService from '../../api/api';
 import {
     Container, Forme,
     Imagem, Accessibility,
@@ -10,15 +11,20 @@ import {
     ButtonEntrar,
     TextoEntrar,
     Logo,
+    TextoCadastro,
+    TextoClique,
 } from "./style";
 import { MdContrast, MdOutlineTextDecrease, MdOutlineTextIncrease } from 'react-icons/md';
 import { HiOutlineLockClosed } from 'react-icons/hi';
 import { ThemeContext } from '../../context/themeContext';
+import { toast } from 'react-toastify';
+import { useNavigate } from 'react-router-dom';
 export default function Login() {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [showPassword, setShowPassword] = useState(false);
     const { switchTheme, isDarkMode } = useContext(ThemeContext);
+    const navigate = useNavigate();
 
 
     const handlePasswordToggle = (e) => {
@@ -57,7 +63,31 @@ export default function Login() {
             return;
         }
 
-        await login(email, password);
+        try {
+
+            const response = await apiService.login({ email, password });
+            console.log(response);
+            const token = response.data;
+
+            if (token) {
+                localStorage.setItem('token', token);
+                toast.success("Sucesso");
+                setTimeout(() => {
+                    window.location.href = "/teste";
+                }, 2000);
+            } else {
+                toast.error("Token não encontrado.");
+            }
+        }
+        catch (error) {
+            toast.error("Falha na autenticação.");
+            console.error(error);
+        }
+
+    };
+
+    const handleGoCadastro = () => {
+        navigate("/cadastro");
     };
 
     return (
@@ -112,9 +142,11 @@ export default function Login() {
                     />
                     <InputGroup.Text id="basic-addon5">{handlePasswordButton}</InputGroup.Text>
                 </InputGroup>
-                <ButtonEntrar type="submit" tabIndex="4" aria-label="botao entrar" onClick={handleLogin}>
+                <ButtonEntrar type="submit" tabIndex="4" aria-label="botao entrar">
                     <TextoEntrar>Entrar</TextoEntrar>
                 </ButtonEntrar>
+                <TextoCadastro>Não Possui Cadastro?</TextoCadastro>
+                <TextoClique onClick={handleGoCadastro}>Clique aqui</TextoClique>
             </Forme>
         </Container >
     );

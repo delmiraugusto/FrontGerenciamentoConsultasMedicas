@@ -57,7 +57,6 @@ export const Forme = styled.form`
 export const AccessibilityContainer = styled.div`
   position: fixed;
   right: 1rem;
-  gap: 0.8rem;
   top: 100px;
   display: flex;
   flex-direction: column;
@@ -112,5 +111,23 @@ export const ButtonEntrar = styled.button`
 
 export const TextoEntrar = styled.p`
   color: ${({ theme }) => theme.text};
-  margin-top: 0.6rem
+  margin-top: 0.1rem
   `;
+
+export const TextoCadastro = styled.p`
+  color: ${({ theme }) => theme.text};
+  align-self: center;
+`;
+
+export const TextoClique = styled.p`
+cursor: pointer;
+  color: blue;
+  text-decoration: none;
+  margin-left: 12rem;
+  margin-bottom: 1rem;
+
+  &:hover {
+    color: darkblue;
+    text-decoration: underline;
+  }
+`;
