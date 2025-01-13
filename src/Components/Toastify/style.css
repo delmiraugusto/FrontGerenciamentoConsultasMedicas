@@ -1,0 +1,17 @@
+:root {
+    --toastify-color-info: var(--azul-informativo);
+    --toastify-color-success: var(--verde-sucesso);
+    --toastify-color-warning: var(--amarelo-atencao);
+    --toastify-color-error: var(--vermelho-perigo);
+}
+
+.Toastify__toast-body,
+.Toastify__toast-body div {
+    background-color: transparent;
+    color: white;
+}
+
+.Toastify,
+.Toastify div {
+    background-color: transparent;
+}
