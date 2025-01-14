@@ -132,7 +132,7 @@ export default function VisualizarConsultas() {
                                 <p><strong>Paciente:</strong> {consulta.patientName}</p>
                                 <p><strong>Idade:</strong> {consulta.patientAge}</p>
                                 <p><strong>Telefone:</strong> {consulta.patientTelephone}</p>
-                                <Button onClick={() => handleEditClick(consulta)}>Editar Consulta</Button>
+                                <Button style={{ backgroundColor: '#ffca2c', color: "black" }} onClick={() => handleEditClick(consulta)}>Editar Consulta</Button>
                             </ListItem>
                         ))
                     ) : (

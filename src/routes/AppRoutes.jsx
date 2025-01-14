@@ -3,7 +3,8 @@ import Login from "../pages/Login";
 import Teste from "../pages/Teste/teste";
 import Cadastro from "../pages/Cadastro";
 import MedicoHome from "../pages/HomeMedico";
-import VisualizarConsultas from "../pages/VisualizarConsultas";
+import VisualizarConsultas from "../pages/VisualizarConsultasMedico";
+import Perfil from "../pages/Perfil";
 
 
 export default function AppRoutes() {
@@ -15,6 +16,8 @@ export default function AppRoutes() {
             <Route path="/cadastro" element={<Cadastro />}></Route>
             <Route path="/homeMedico" element={<MedicoHome />}></Route>
             <Route path="//visualizar-consulta" element={<VisualizarConsultas />}></Route>
+            <Route path="/perfil" element={<Perfil />}></Route>
+
 
         </Routes>
     );
