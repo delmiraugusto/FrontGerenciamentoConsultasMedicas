@@ -19,6 +19,7 @@ import { HiOutlineLockClosed } from 'react-icons/hi';
 import { ThemeContext } from '../../context/themeContext';
 import { toast } from 'react-toastify';
 import { useNavigate } from 'react-router-dom';
+import jwt_decode from 'jwt-decode';
 export default function Login() {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
@@ -59,7 +60,7 @@ export default function Login() {
 
 
         if (!email || !password) {
-            toast.warning("Preencha todos os campos.");
+            alert("Preencha todos os campos.");
             return;
         }
 
@@ -71,16 +72,25 @@ export default function Login() {
 
             if (token) {
                 localStorage.setItem('token', token);
-                toast.success("Sucesso");
+
+                const decodedToken = jwt_decode(token);
+                const userRole = decodedToken?.role;
+
                 setTimeout(() => {
-                    window.location.href = "/teste";
+                    if (userRole === 'Medico') {
+                        navigate("/homeMedico");
+                    } else if (userRole === 'Paciente') {
+                        navigate("/teste");
+                    }
                 }, 2000);
+
+                alert("Sucesso");
             } else {
-                toast.error("Token não encontrado.");
+                alert("Token não encontrado.");
             }
         }
         catch (error) {
-            toast.error("Falha na autenticação.");
+            alert("Falha na autenticação.");
             console.error(error);
         }
 

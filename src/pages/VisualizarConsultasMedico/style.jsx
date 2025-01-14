@@ -3,6 +3,7 @@ import styled from 'styled-components';
 export const Container = styled.div`
     display: flex;
     justify-content: space-between;
+    background-color: #d6d8da;
     padding: 20px;
     gap: 20px;
     height: 100vh;
@@ -12,7 +13,7 @@ export const Column = styled.div`
     flex: 1;
     display: flex;
     flex-direction: column;
-    background-color: #f8f9fa;
+    background-color: #eff0f1;
     border: 1px solid #dee2e6;
     border-radius: 5px;
     padding: 20px;
@@ -42,15 +43,11 @@ export const ListItem = styled.div`
 export const Button = styled.button`
     margin-top: 10px;
     padding: 10px 15px;
-    background-color: #007bff;
     color: white;
     border: none;
     border-radius: 5px;
     cursor: pointer;
 
-    &:hover {
-        background-color: #0056b3;
-    }
 `;
 
 export const Modal = styled.div`
@@ -65,9 +62,18 @@ export const Modal = styled.div`
     width: 50%; 
     max-width: 600px;
     height: auto; 
-    overflow: auto;
+    z-index: 1001;
 `;
 
+export const Overlay = styled.div`
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.772);
+    z-index: 1000; 
+`;
 
 export const Input = styled.input`
     display: block;

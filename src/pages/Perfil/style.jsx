@@ -82,17 +82,17 @@ export const Button = styled.button`
 
   &.edit {
     background-color: #ffc107;
-    color: white;
+    color: black;
     &:hover {
       background-color: #e0a800;
     }
   }
 
   &.delete {
-    background-color: #dc3545;
+    background-color: #c82333;
     color: white;
     &:hover {
-      background-color: #c82333;
+      background-color: #fa5a54;
     }
   }
 

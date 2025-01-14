@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import jwt_decode from 'jwt-decode';
 import { Row, Header, Container, FormGroup, Input, Button, BlockedInput, Select, Option, ButtonContainer } from './style';
-
 import apiService from '../../api/api';
 
 export default function Perfil() {
@@ -46,21 +45,39 @@ export default function Perfil() {
         }
 
         setEditMode(false);
+        alert('Dados salvos com sucesso!');
     };
 
     const handleDisable = async () => {
         if (userRole === 'Medico') {
-            // Exibir alerta e recarregar a página
-            alert('Perfil desativado com sucesso!');
-            await apiService.deleteDoctor(user.id);  // Desativar o perfil do médico
-            window.location.reload(); // Atualizar a página
+            try {
+                await apiService.deleteDoctor(user.id); // Chama a função de exclusão
+                alert('Perfil desativado com sucesso!');
+                window.location.reload();
+            } catch (error) {
+                if (error.response && error.response.data && error.response.data.message) {
+                    alert(error.response.data.message); // Mostra a mensagem de erro recebida da API
+                } else {
+                    alert('Erro ao desativar o perfil do médico!');
+                }
+            }
         }
     };
 
     const handleDeletePatient = async () => {
         if (userRole === 'Paciente') {
-            localStorage.removeItem('token');
-            navigate('/');
+            try {
+                await apiService.deletePatient(user.id); // Chama a função de exclusão
+                localStorage.removeItem('token');
+                navigate('/');
+                alert('Perfil deletado com sucesso!');
+            } catch (error) {
+                if (error.response && error.response.data && error.response.data.message) {
+                    alert(error.response.data.message); // Mostra a mensagem de erro recebida da API
+                } else {
+                    alert('Erro ao excluir o perfil do paciente!');
+                }
+            }
         }
     };
 
@@ -75,7 +92,7 @@ export default function Perfil() {
                         type="text"
                         value={user.name || ''}
                         onChange={(e) => setUser({ ...user, name: e.target.value })}
-                        disabled={!editMode && userRole === 'Paciente'} // Paciente pode editar nome se editMode estiver ativo
+                        disabled={!editMode}  // Agora o nome só é editável quando editMode for verdadeiro
                     />
                 </FormGroup>
                 <FormGroup>
@@ -93,10 +110,9 @@ export default function Perfil() {
                         type="text"
                         value={user.telephone || ''}
                         onChange={(e) => setUser({ ...user, telephone: e.target.value })}
-                        disabled={!editMode && userRole === 'Paciente'}
+                        disabled={!editMode}
                     />
                 </FormGroup>
-
                 {userRole === 'Medico' && (
                     <FormGroup>
                         <label>CRM</label>
@@ -113,7 +129,7 @@ export default function Perfil() {
 
                 {userRole === 'Medico' && (
                     <FormGroup>
-                        <label>Ativo</label>
+                        <label>Status</label>
                         <Select
                             value={isActive}
                             onChange={(e) => setIsActive(e.target.value === 'true')}
@@ -131,7 +147,7 @@ export default function Perfil() {
                     Voltar
                 </Button>
                 {editMode ? (
-                    <Button style={{ backgroundColor: "#013d32", color: "white" }} onClick={handleSave} className="edit">
+                    <Button style={{ backgroundColor: "#013d32", color: "white" }} onClick={handleSave} className="save">
                         Salvar
                     </Button>
                 ) : (
@@ -141,13 +157,13 @@ export default function Perfil() {
                 )}
 
                 {userRole === 'Medico' && (
-                    <Button onClick={handleDisable} className="delete">
+                    <Button onClick={handleDisable} className="delete" style={{ marginLeft: 'auto' }}>
                         Desativar Perfil
                     </Button>
                 )}
 
                 {userRole === 'Paciente' && (
-                    <Button onClick={handleDeletePatient} className="delete">
+                    <Button onClick={handleDeletePatient} style={{ marginLeft: 'auto' }} className="delete">
                         Deletar Perfil
                     </Button>
                 )}

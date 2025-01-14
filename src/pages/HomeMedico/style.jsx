@@ -6,7 +6,7 @@ export const Container = styled.div`
     align-items: center;
     flex-direction: column;
     height: 100vh;
-    background-color: #f8f9fa;
+    background-color: #aaaaaa;
 `;
 
 export const HeaderWrapper = styled.div`
@@ -14,7 +14,7 @@ export const HeaderWrapper = styled.div`
     flex-direction: column;
     align-items: center;
     padding: 20px;
-    background-color: #007bff;
+    background-color: #013d32;
     color: white;
     border-radius: 8px;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
@@ -33,7 +33,7 @@ export const HeaderWrapper = styled.div`
 
 export const NavButton = styled.button`
     background-color: white;
-    color: #007bff;
+    color: #0D0D0D;
     border: 2px solid white;
     border-radius: 4px;
     padding: 10px 20px;
@@ -43,7 +43,7 @@ export const NavButton = styled.button`
     transition: all 0.3s ease;
 
     &:hover {
-        background-color: #0056b3;
+        background-color: #3D3D3D;
         color: white;
     }
 `;

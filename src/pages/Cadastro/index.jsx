@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { Form, Button } from 'react-bootstrap';
 import apiService from '../../api/api';
+import { useNavigate } from 'react-router-dom';
 import {
     Container,
     FormWrapper,
@@ -10,6 +11,8 @@ import {
     Input,
     CheckboxWrapper,
     ErrorText,
+    CustomButton,
+    BackButton
 } from './style';
 
 export default function Cadastro() {
@@ -26,6 +29,7 @@ export default function Cadastro() {
     });
 
     const [errors, setErrors] = useState({});
+    const navigate = useNavigate();
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -35,7 +39,7 @@ export default function Cadastro() {
     const validate = () => {
         const newErrors = {};
 
-        if (!formData.name) newErrors.name = 'O campo name é obrigatório';
+        if (!formData.name) newErrors.name = 'O campo nome é obrigatório';
         if (!formData.cpf || formData.cpf.length !== 11) newErrors.cpf = 'O CPF deve ter 11 dígitos';
         if (!formData.telephone) newErrors.telephone = 'O campo Número é obrigatório';
         if (!formData.email) newErrors.email = 'O campo Email é obrigatório';
@@ -45,6 +49,9 @@ export default function Cadastro() {
         if (formData.role === 'Medico') {
             if (!formData.crm || formData.crm.length < 4 || formData.crm.length > 6) {
                 newErrors.crm = 'O CRM deve ter entre 4 e 6 caracteres';
+            }
+            if (!formData.specialty) {
+                newErrors.specialty = 'O campo Especialidade é obrigatório';
             }
         }
 
@@ -70,28 +77,37 @@ export default function Cadastro() {
         }
 
         try {
-            const response = await apiService.signUp(formData);
+            const response = await apiService.signUp(filteredFormData);
             alert('Cadastro realizado com sucesso!');
             setTimeout(() => {
-                window.location.href = "/";
-            }, 2000);
+                window.location.href = "/";  // Redireciona após cadastro
+            }, 1000);
         } catch (error) {
-            if (error.response) {
-                alert(`Erro: ${error.response.data.message || 'Erro ao realizar cadastro.'}`);
-            } else if (error.request) {
-                alert('Erro: Não foi possível conectar ao servidor.');
+            console.error(error);
+
+            // Verificando se a resposta de erro contém a mensagem
+            if (error.response && error.response.data) {
+                const errorMessage = error.response.data;  // Captura a mensagem de erro retornada
+
+                // Verificando se a mensagem contém um erro específico
+                if (errorMessage.includes("Email") || errorMessage.includes("CPF")) {
+                    alert(`Erro: ${errorMessage}`);  // Exibe o erro específico de email ou CPF
+                } else {
+                    alert(`Erro: ${errorMessage}`);  // Exibe o erro genérico
+                }
             } else {
-                alert(`Erro desconhecido: ${error.message}`);
+                alert('Erro ao realizar cadastro. Tente novamente mais tarde.');
             }
         }
     };
+
 
     return (
         <Container>
             <FormWrapper onSubmit={handleSubmit}>
                 <Title>Cadastro</Title>
                 <InputGroup>
-                    <Label>name *</Label>
+                    <Label>Nome *</Label>
                     <Input name="name" value={formData.name} onChange={handleChange} />
                     {errors.name && <ErrorText>{errors.name}</ErrorText>}
                 </InputGroup>
@@ -103,7 +119,7 @@ export default function Cadastro() {
                 </InputGroup>
 
                 <InputGroup>
-                    <Label>Número *</Label>
+                    <Label>Telefone *</Label>
                     <Input name="telephone" value={formData.telephone} onChange={handleChange} />
                     {errors.telephone && <ErrorText>{errors.telephone}</ErrorText>}
                 </InputGroup>
@@ -115,7 +131,7 @@ export default function Cadastro() {
                 </InputGroup>
 
                 <InputGroup>
-                    <Label>password *</Label>
+                    <Label>Senha *</Label>
                     <Input type="password" name="password" value={formData.password} onChange={handleChange} />
                     {errors.password && <ErrorText>{errors.password}</ErrorText>}
                 </InputGroup>
@@ -148,21 +164,25 @@ export default function Cadastro() {
                             {errors.crm && <ErrorText>{errors.crm}</ErrorText>}
                         </InputGroup>
                         <InputGroup>
-                            <Label>specialty *</Label>
+                            <Label>Especialidade *</Label>
                             <Input name="specialty" value={formData.specialty} onChange={handleChange} />
+                            {errors.specialty && <ErrorText>{errors.specialty}</ErrorText>}
                         </InputGroup>
                     </>
                 )}
 
                 {formData.role === 'Paciente' && (
                     <InputGroup>
-                        <Label>age *</Label>
+                        <Label>Idade *</Label>
                         <Input name="age" value={formData.age} onChange={handleChange} />
                         {errors.age && <ErrorText>{errors.age}</ErrorText>}
                     </InputGroup>
                 )}
 
-                <Button type="submit">Cadastrar</Button>
+                <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                    <BackButton onClick={() => navigate("/")}>Voltar</BackButton>
+                    <CustomButton type="submit">Cadastrar</CustomButton>
+                </div>
             </FormWrapper>
         </Container>
     );

@@ -15,7 +15,7 @@ export default function AppRoutes() {
             <Route path="/teste" element={<Teste />}></Route>
             <Route path="/cadastro" element={<Cadastro />}></Route>
             <Route path="/homeMedico" element={<MedicoHome />}></Route>
-            <Route path="//visualizar-consulta" element={<VisualizarConsultas />}></Route>
+            <Route path="/visualizar-consulta" element={<VisualizarConsultas />}></Route>
             <Route path="/perfil" element={<Perfil />}></Route>
 
 

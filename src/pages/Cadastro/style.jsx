@@ -62,8 +62,9 @@ export const ErrorText = styled.span`
     margin-top: 5px;
 `;
 
-export const Button = styled.button`
-    background-color: #007bff;
+export const CustomButton = styled.button`
+    width: 10rem;
+    background-color: #013d32;
     color: white;
     font-size: 16px;
     padding: 10px;
@@ -73,6 +74,22 @@ export const Button = styled.button`
     transition: background-color 0.3s;
 
     &:hover {
-        background-color: #0056b3;
+        background-color: #012720;
+    }
+`;
+
+export const BackButton = styled.button`
+    background-color: #3D3D3D;
+    color: white;
+    width: 10rem;
+    font-size: 16px;
+    padding: 10px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+
+    &:hover {
+        background-color: #2c2c2c;
     }
 `;
