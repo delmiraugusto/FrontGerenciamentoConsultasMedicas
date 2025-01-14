@@ -89,3 +89,51 @@ export const Input = styled.input`
         cursor: not-allowed;
     }
 `;
+
+export const Sidebar = styled.div`
+    width: 250px;
+    background-color: #013d32;
+    color: white;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 20px;
+    gap: 20px;
+    position: fixed;
+    height: 100%;
+    top: 0;
+    left: 0;
+`;
+
+export const UserName = styled.h2`
+    font-size: 18px;
+    color: #ffffff;
+    text-align: center;
+    margin-bottom: 20px;
+`;
+
+export const SidebarButton = styled.button`
+    width: 80%;
+    padding: 10px 15px;
+    background-color: white;
+    color: #013d32;
+    border: none;
+    border-radius: 5px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+
+    &:hover {
+        background-color: #0d5e42;
+        color: white;
+    }
+
+    &:last-of-type {
+        background-color: #fa5a54;
+        color: white;
+
+        &:hover {
+            background-color: #c03e3b;
+        }
+    }
+`;

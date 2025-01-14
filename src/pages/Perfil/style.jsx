@@ -72,6 +72,12 @@ export const Button = styled.button`
   border: none;
   transition: background-color 0.3s;
 
+  &:disabled {
+    background-color: #ccc; /* Cor cinza */
+    cursor: not-allowed;   /* Cursor indicando que o botão está desativado */
+    color: #666;           /* Cor do texto */
+  }
+
   &.back {
     background-color: #3d3d3d;
     color: white;
@@ -94,6 +100,12 @@ export const Button = styled.button`
     &:hover {
       background-color: #fa5a54;
     }
+
+    &:disabled {
+      background-color: #ccc; 
+      color: #666;           
+      cursor: not-allowed;
+    }
   }
 
   &.save {
@@ -104,3 +116,4 @@ export const Button = styled.button`
     }
   }
 `;
+

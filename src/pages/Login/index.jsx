@@ -67,7 +67,6 @@ export default function Login() {
         try {
 
             const response = await apiService.login({ email, password });
-            console.log(response);
             const token = response.data;
 
             if (token) {
@@ -80,18 +79,17 @@ export default function Login() {
                     if (userRole === 'Medico') {
                         navigate("/homeMedico");
                     } else if (userRole === 'Paciente') {
-                        navigate("/teste");
+                        navigate("/homePaciente");
                     }
                 }, 2000);
 
-                alert("Sucesso");
+                alert("Login Realizado com Sucesso!");
             } else {
                 alert("Token não encontrado.");
             }
         }
         catch (error) {
-            alert("Falha na autenticação.");
-            console.error(error);
+            alert("Email ou Senha Inválidos.");
         }
 
     };
@@ -155,8 +153,8 @@ export default function Login() {
                 <ButtonEntrar type="submit" tabIndex="4" aria-label="botao entrar">
                     <TextoEntrar>Entrar</TextoEntrar>
                 </ButtonEntrar>
-                <TextoCadastro>Não Possui Cadastro?</TextoCadastro>
-                <TextoClique onClick={handleGoCadastro}>Clique aqui</TextoClique>
+                <TextoCadastro>Não Possui Cadastro?                <TextoClique onClick={handleGoCadastro}>Clique aqui</TextoClique></TextoCadastro>
+
             </Forme>
         </Container >
     );

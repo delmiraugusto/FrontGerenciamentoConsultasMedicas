@@ -5,7 +5,7 @@ export const Container = styled.div`
   align-items: center;
   justify-content: space-evenly;
   height: 100vh;
-  background-color: ${({ theme }) => theme.div};
+  background-color: #d3d3d3;
 
   @media (min-width: 768px) {
     flex-direction: row;
@@ -93,7 +93,7 @@ export const TogglePasswordButton = styled.button`
 `;
 
 export const ButtonEntrar = styled.button`
-  background: ${({ theme }) => theme.button};
+  background: #013d32;
   border: none;
   font-weight: bold;
   align-self: center;
@@ -110,12 +110,10 @@ export const ButtonEntrar = styled.button`
 `;
 
 export const TextoEntrar = styled.p`
-  color: ${({ theme }) => theme.text};
   margin-top: 0.1rem
   `;
 
 export const TextoCadastro = styled.p`
-  color: ${({ theme }) => theme.text};
   align-self: center;
 `;
 
@@ -123,8 +121,7 @@ export const TextoClique = styled.p`
 cursor: pointer;
   color: blue;
   text-decoration: none;
-  margin-left: 12rem;
-  margin-bottom: 1rem;
+  text-align: center;
 
   &:hover {
     color: darkblue;

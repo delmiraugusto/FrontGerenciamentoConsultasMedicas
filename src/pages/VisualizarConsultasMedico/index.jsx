@@ -3,12 +3,14 @@ import { Container, Column, Header, List, ListItem, Button, Modal, Input, Overla
 import apiService from '../../api/api';
 import jwt_decode from 'jwt-decode';
 import moment from 'moment';
+import { useNavigate } from 'react-router-dom';
 
 export default function VisualizarConsultas() {
     const [consultasAgendadas, setConsultasAgendadas] = useState([]);
     const [historicoConsultas, setHistoricoConsultas] = useState([]);
     const [selectedConsulta, setSelectedConsulta] = useState(null);
     const [modalOpen, setModalOpen] = useState(false);
+    const navigate = useNavigate();
 
     const getDoctorIdFromToken = () => {
         const token = localStorage.getItem('token');
@@ -28,10 +30,7 @@ export default function VisualizarConsultas() {
             }
 
             try {
-                console.log(`Buscando consultas para o doctorId: ${doctorId}`);
                 const response = await apiService.getConsultByDoctor(doctorId);
-                console.log('Resposta da API:', response.data);
-
                 const todasConsultas = response.data;
                 const agora = moment();
 
@@ -52,7 +51,6 @@ export default function VisualizarConsultas() {
 
         fetchConsultas();
     }, []);
-
 
     const getStatus = (consulta) => {
         if (consulta.isCanceled) return "Cancelada";
@@ -129,8 +127,25 @@ export default function VisualizarConsultas() {
         setSelectedConsulta(null);
     };
 
+    const handleBack = () => {
+        navigate('/homeMedico');
+    };
+
+    const handleLogout = () => {
+        localStorage.clear();
+        navigate('/');
+    };
+
     return (
         <Container>
+            <div style={{ marginBottom: '20px', textAlign: 'left', display: 'flex', flexDirection: 'column', gap: '10px' }}>
+                <Button onClick={handleBack} style={{ backgroundColor: '#013d32' }}>
+                    Voltar para Perfil
+                </Button>
+                <Button onClick={handleLogout} style={{ backgroundColor: '#fa5a54' }}>
+                    Sair
+                </Button>
+            </div>
             <Column>
                 <Header>Consultas Agendadas</Header>
                 <List>
@@ -142,7 +157,7 @@ export default function VisualizarConsultas() {
                                 <p><strong>Paciente:</strong> {consulta.patientName}</p>
                                 <p><strong>Idade:</strong> {consulta.patientAge}</p>
                                 <p><strong>Telefone:</strong> {consulta.patientTelephone}</p>
-                                <Button style={{ backgroundColor: '#ffca2c', color: "black" }} onClick={() => handleEditClick(consulta)}>Editar Consulta</Button>
+                                <Button style={{ backgroundColor: '#ffca2c', color: 'black' }} onClick={() => handleEditClick(consulta)}>Editar Consulta</Button>
                             </ListItem>
                         ))
                     ) : (
@@ -150,13 +165,12 @@ export default function VisualizarConsultas() {
                     )}
                 </List>
             </Column>
-
             <Column>
                 <Header>Histórico de Consultas</Header>
                 <List>
                     {historicoConsultas.length > 0 ? (
                         historicoConsultas.map((consulta) => (
-                            <ListItem key={consulta.id} style={{ backgroundColor: '#ffffff' }}>
+                            <ListItem key={consulta.id}>
                                 <p><strong>Descrição:</strong> {consulta.description}</p>
                                 <p><strong>Data e Hora:</strong> {consulta.dateTimeQuery}</p>
                                 <p><strong>Paciente:</strong> {consulta.patientName}</p>
@@ -186,96 +200,6 @@ export default function VisualizarConsultas() {
                     )}
                 </List>
             </Column>
-
-            {modalOpen && (
-                <>
-                    <Overlay />
-                    <Modal style={{ width: '50%', padding: '20px', margin: '0 auto' }}>
-                        <h2 style={{ textAlign: 'center' }}>Editar Consulta</h2>
-                        <label style={{ display: 'block', margin: '10px 0' }}>
-                            Descrição:
-                            <Input
-                                value={selectedConsulta.description}
-                                onChange={(e) => setSelectedConsulta({ ...selectedConsulta, description: e.target.value })}
-                                style={{
-                                    width: '100%',
-                                    padding: '10px',
-                                    marginTop: '5px',
-                                    fontSize: '16px',
-                                }}
-                            />
-                        </label>
-                        <label style={{ display: 'block', margin: '10px 0' }}>
-                            Data e Hora:
-                            <Input
-                                type="text"
-                                value={selectedConsulta.dateTimeQuery || ''}
-                                placeholder="DD-MM-YYYY HH:mm:ss"
-                                onChange={(e) => {
-                                    const inputValue = e.target.value;
-                                    setSelectedConsulta({
-                                        ...selectedConsulta,
-                                        dateTimeQuery: inputValue,
-                                    });
-                                }}
-                                style={{
-                                    width: '100%',
-                                    padding: '10px',
-                                    marginTop: '5px',
-                                    fontSize: '16px',
-                                }}
-                            />
-                        </label>
-                        <label style={{ display: 'block', margin: '10px 0' }}>
-                            Paciente:
-                            <Input
-                                value={selectedConsulta.patientName}
-                                disabled
-                                style={{
-                                    width: '100%',
-                                    padding: '10px',
-                                    marginTop: '5px',
-                                    fontSize: '16px',
-                                }}
-                            />
-                        </label>
-                        <label style={{ display: 'block', margin: '10px 0' }}>
-                            Idade:
-                            <Input
-                                value={selectedConsulta.patientAge}
-                                disabled
-                                style={{
-                                    width: '100%',
-                                    padding: '10px',
-                                    marginTop: '5px',
-                                    fontSize: '16px',
-                                }}
-                            />
-                        </label>
-                        <label style={{ display: 'block', margin: '10px 0' }}>
-                            Telefone:
-                            <Input
-                                value={selectedConsulta.patientTelephone}
-                                disabled
-                                style={{
-                                    width: '100%',
-                                    padding: '10px',
-                                    marginTop: '5px',
-                                    fontSize: '16px',
-                                }}
-                            />
-                        </label>
-                        <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: '20px' }}>
-                            <Button onClick={handleCloseModal} style={{ backgroundColor: '#3D3D3D', width: '10rem' }}>
-                                Voltar
-                            </Button>
-                            <Button onClick={handleSave} style={{ backgroundColor: '#013d32', width: '10rem' }}>
-                                Salvar
-                            </Button>
-                        </div>
-                    </Modal>
-                </>
-            )}
         </Container>
     );
 }

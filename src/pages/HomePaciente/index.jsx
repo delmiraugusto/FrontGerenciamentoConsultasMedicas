@@ -8,12 +8,11 @@ export default function MedicoHome() {
 
     const getMedicoName = () => {
         const token = localStorage.getItem('token');
-        console.log('token:', token);
 
         if (token) {
             const decodedToken = jwt_decode(token);
             console.log('Decoded Token:', decodedToken);
-            return decodedToken.unique_name || 'Médico(a)';
+            return decodedToken.unique_name;
         }
         return 'Médico(a)';
     };
@@ -30,18 +29,13 @@ export default function MedicoHome() {
     return (
         <Container>
             <HeaderWrapper>
-                <h1>Bem-vindo(a), Dr(a) {getMedicoName()}</h1>
+                <h1>Bem-vindo(a), {getMedicoName()}</h1>
                 <div>
-                    <NavButton onClick={() => handleNavigate('/visualizar-consulta')}>
-                        Visualizar Consultas
-                    </NavButton>
-                    <NavButton onClick={() => handleNavigate('/perfil')}>
-                        Ver Perfil
-                    </NavButton>
-                    <NavButton onClick={handleLogout}>
-                        Sair
-                    </NavButton>
+                    <NavButton onClick={() => handleNavigate('/visualizar-consulta')}>Visualizar Consultas</NavButton>
+                    <NavButton onClick={() => handleNavigate('/')}>Per</NavButton>
+                    <NavButton onClick={() => handleNavigate('/perfil')}>Ver Perfil</NavButton>
                 </div>
+                <NavButton className="logout" onClick={handleLogout}>Sair</NavButton>
             </HeaderWrapper>
         </Container>
     );

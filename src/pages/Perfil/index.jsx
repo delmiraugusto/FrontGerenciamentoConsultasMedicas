@@ -8,7 +8,6 @@ export default function Perfil() {
     const [user, setUser] = useState({});
     const [isActive, setIsActive] = useState(false);
     const [editMode, setEditMode] = useState(false);
-
     const navigate = useNavigate();
 
     const token = localStorage.getItem('token');
@@ -157,11 +156,15 @@ export default function Perfil() {
                 )}
 
                 {userRole === 'Medico' && (
-                    <Button onClick={handleDisable} className="delete" style={{ marginLeft: 'auto' }}>
+                    <Button
+                        onClick={handleDisable}
+                        className="delete"
+                        style={{ marginLeft: 'auto' }}
+                        disabled={!isActive}
+                    >
                         Desativar Perfil
                     </Button>
                 )}
-
                 {userRole === 'Paciente' && (
                     <Button onClick={handleDeletePatient} style={{ marginLeft: 'auto' }} className="delete">
                         Deletar Perfil
