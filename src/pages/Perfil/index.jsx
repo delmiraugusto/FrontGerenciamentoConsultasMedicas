@@ -51,12 +51,12 @@ export default function Perfil() {
     const handleDisable = async () => {
         if (userRole === 'Medico') {
             try {
-                await apiService.deleteDoctor(user.id); // Chama a função de exclusão
+                await apiService.deleteDoctor(user.id);
                 alert('Perfil desativado com sucesso!');
                 window.location.reload();
             } catch (error) {
                 if (error.response && error.response.data && error.response.data.message) {
-                    alert(error.response.data.message); // Mostra a mensagem de erro recebida da API
+                    alert(error.response.data.message);
                 } else {
                     alert('Erro ao desativar o perfil do médico!');
                 }
@@ -67,13 +67,13 @@ export default function Perfil() {
     const handleDeletePatient = async () => {
         if (userRole === 'Paciente') {
             try {
-                await apiService.deletePatient(user.id); // Chama a função de exclusão
+                await apiService.deletePatient(user.id);
                 localStorage.removeItem('token');
                 navigate('/');
                 alert('Perfil deletado com sucesso!');
             } catch (error) {
                 if (error.response && error.response.data && error.response.data.message) {
-                    alert(error.response.data.message); // Mostra a mensagem de erro recebida da API
+                    alert(error.response.data.message);
                 } else {
                     alert('Erro ao excluir o perfil do paciente!');
                 }
@@ -92,7 +92,7 @@ export default function Perfil() {
                         type="text"
                         value={user.name || ''}
                         onChange={(e) => setUser({ ...user, name: e.target.value })}
-                        disabled={!editMode}  // Agora o nome só é editável quando editMode for verdadeiro
+                        disabled={!editMode}
                     />
                 </FormGroup>
                 <FormGroup>

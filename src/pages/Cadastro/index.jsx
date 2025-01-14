@@ -80,20 +80,18 @@ export default function Cadastro() {
             const response = await apiService.signUp(filteredFormData);
             alert('Cadastro realizado com sucesso!');
             setTimeout(() => {
-                window.location.href = "/";  // Redireciona após cadastro
+                window.location.href = "/";
             }, 1000);
         } catch (error) {
             console.error(error);
 
-            // Verificando se a resposta de erro contém a mensagem
             if (error.response && error.response.data) {
-                const errorMessage = error.response.data;  // Captura a mensagem de erro retornada
+                const errorMessage = error.response.data;
 
-                // Verificando se a mensagem contém um erro específico
                 if (errorMessage.includes("Email") || errorMessage.includes("CPF")) {
-                    alert(`Erro: ${errorMessage}`);  // Exibe o erro específico de email ou CPF
+                    alert(`Erro: ${errorMessage}`);
                 } else {
-                    alert(`Erro: ${errorMessage}`);  // Exibe o erro genérico
+                    alert(`Erro: ${errorMessage}`);
                 }
             } else {
                 alert('Erro ao realizar cadastro. Tente novamente mais tarde.');
