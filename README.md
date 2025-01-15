@@ -1,6 +1,6 @@
 # Sistema de Agendamento de Consultas - C# & React VITE
 
-## Sobre o Projeto -
+## Sobre o Projeto
 
 Crie uma API Web para gerenciar uma aplicação de sua escolha. Os usuários devem ser capazes de realizar as principais operações CRUD (Create, Read, Update, Delete) relacionadas ao tema escolhido. Além disso, o usuário deverá ter uma interface front-end para utilizar a aplicação.
 </br>
