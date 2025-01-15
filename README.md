@@ -1,4 +1,4 @@
-# Sistema de Agendamento de Consultas - C# & React VITE
+Sistema de Agendamento de Consultas - C# & React VITE
 
 ## Sobre o Projeto
 
@@ -21,8 +21,7 @@ Bônus (Diferencial):
 ### Estrutura do diretório do projeto:
 
 ```bash
-/src
-├── Sistema-CursosOnline               # React project
+├── FrontHospital                      # React project
 ├── src/                               # Pasta raiz do código fonte
 │   ├── Api/                           # Pasta de componentes de aplicação do projeto
 │   │  ├── Api.jsx/                    # Configuração dos endpoints da Api
