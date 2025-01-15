@@ -1,6 +1,6 @@
 import { useState, useContext } from 'react';
 import { BsEye, BsEyeSlash } from "react-icons/bs";
-const foto = new URL("../../assets/iconHospital.png", import.meta.url);
+const foto = new URL("../../assets/estetoscopio.png", import.meta.url);
 import { Form, InputGroup } from 'react-bootstrap';
 import apiService from '../../api/api';
 import {
@@ -90,9 +90,9 @@ export default function Login() {
 
     return (
         <Container>
-            <Imagem src={foto} alt="icon_Hospital" />
+            <Imagem src={foto} alt="icon_Login" />
             <Forme onSubmit={handleLogin}>
-                <Logo src={foto} alt="icon_Hospital" />
+                <Logo src={foto} alt="icon_Login" />
                 <Titulo>Gerenciamento de Consultas</Titulo>
                 <InputGroup className="mb-3">
                     <InputGroup.Text id="basic-addon1">@</InputGroup.Text>

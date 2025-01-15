@@ -19,6 +19,7 @@ export const DivLogin = styled.div`
 
 export const Imagem = styled.img`
   display: none;
+  width: 40rem;
 
   @media (min-width: 768px) {
     display: flex;
@@ -27,7 +28,7 @@ export const Imagem = styled.img`
 
 export const Logo = styled.img`
 display: none;
-width: 13rem;
+width: 20rem;
 align-self: center;
 
 @media (max-width: 768px) {
