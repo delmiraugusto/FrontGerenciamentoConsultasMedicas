@@ -7,6 +7,7 @@ import VisualizarConsultas from "../pages/VisualizarConsultasMedico";
 import Perfil from "../pages/Perfil";
 import PacienteHome from "../pages/HomePaciente";
 import VisualizarConsultasPaciente from "../pages/VisualizarConsultasPaciente";
+import AgendamentoConsulta from "../pages/AgendamentoConsulta";
 
 
 export default function AppRoutes() {
@@ -21,6 +22,7 @@ export default function AppRoutes() {
             <Route path="/visualizar-consulta" element={<VisualizarConsultas />}></Route>
             <Route path="/visualizar-consulta-paciente" element={<VisualizarConsultasPaciente />}></Route>
             <Route path="/perfil" element={<Perfil />}></Route>
+            <Route path="/agendamento-consulta" element={<AgendamentoConsulta />}></Route>
 
 
         </Routes>

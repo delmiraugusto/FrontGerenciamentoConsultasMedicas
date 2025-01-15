@@ -57,7 +57,7 @@ export default function PacienteHome() {
                 <h1>Bem-vindo(a), {pacientName}</h1>
                 <div>
                     <NavButton onClick={() => handleNavigate('/visualizar-consulta-paciente')}>Visualizar Consultas</NavButton>
-                    <NavButton onClick={() => handleNavigate('/')}>Per</NavButton>
+                    <NavButton onClick={() => handleNavigate('/')}>Agendar Consulta</NavButton>
                     <NavButton onClick={() => handleNavigate('/perfil')}>Ver Perfil</NavButton>
                 </div>
                 <NavButton className="logout" onClick={handleLogout}>Sair</NavButton>
