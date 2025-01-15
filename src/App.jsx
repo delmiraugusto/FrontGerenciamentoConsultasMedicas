@@ -6,6 +6,7 @@ import { ThemeProvider } from 'styled-components';
 import { useContext } from 'react';
 import { darkTheme, GlobalStyle, lightTheme } from './styles/themes';
 import { ThemeContext } from './context/themeContext';
+import { AuthProvider } from './context/AuthContext';
 
 function App() {
   const { isDarkMode } = useContext(ThemeContext);
@@ -14,8 +15,10 @@ function App() {
     <BrowserRouter>
       <ThemeProvider theme={isDarkMode ? darkTheme : lightTheme}>
         <GlobalStyle />
-        <ToastifyAlert />
-        <AppRoutes />
+        <AuthProvider>
+          <ToastifyAlert />
+          <AppRoutes />
+        </AuthProvider>
       </ThemeProvider>
     </BrowserRouter>
   )

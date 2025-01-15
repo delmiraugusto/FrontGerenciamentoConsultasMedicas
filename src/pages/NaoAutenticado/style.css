@@ -1,0 +1,14 @@
+.containerAunt {
+    display: flex;
+    background-color: transparent;
+    justify-content: center;
+}
+
+.h1Aunt {
+    background-color: transparent;
+    color: #0D0D0D;
+}
+
+.headerAunt {
+    background-color: transparent;
+}

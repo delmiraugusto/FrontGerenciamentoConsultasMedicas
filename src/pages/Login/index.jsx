@@ -14,18 +14,20 @@ import {
     TextoCadastro,
     TextoClique,
 } from "./style";
-import { MdContrast, MdOutlineTextDecrease, MdOutlineTextIncrease } from 'react-icons/md';
 import { HiOutlineLockClosed } from 'react-icons/hi';
 import { ThemeContext } from '../../context/themeContext';
 import { toast } from 'react-toastify';
 import { useNavigate } from 'react-router-dom';
 import jwt_decode from 'jwt-decode';
+import { AuthContext } from '../../context/AuthContext';
 export default function Login() {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [showPassword, setShowPassword] = useState(false);
     const { switchTheme, isDarkMode } = useContext(ThemeContext);
     const navigate = useNavigate();
+    const { login } = useContext(AuthContext);
+
 
 
     const handlePasswordToggle = (e) => {
@@ -52,34 +54,34 @@ export default function Login() {
             return;
         }
 
-        try {
+        // try {
 
-            const response = await apiService.login({ email, password });
-            const token = response.data;
+        // const response = await apiService.login({ email, password });
+        // const token = response.data;
 
-            if (token) {
-                localStorage.setItem('token', token);
+        //     if (token) {
+        //         localStorage.setItem('token', token);
 
-                const decodedToken = jwt_decode(token);
-                const userRole = decodedToken?.role;
+        //         const decodedToken = jwt_decode(token);
+        //         const userRole = decodedToken?.role;
 
-                setTimeout(() => {
-                    if (userRole === 'Medico') {
-                        navigate("/homeMedico");
-                    } else if (userRole === 'Paciente') {
-                        navigate("/homePaciente");
-                    }
-                }, 2000);
+        //         setTimeout(() => {
+        //             if (userRole === 'Medico') {
+        //                 navigate("/homeMedico");
+        //             } else if (userRole === 'Paciente') {
+        //                 navigate("/homePaciente");
+        //             }
+        //         }, 2000);
 
-                alert("Login Realizado com Sucesso!");
-            } else {
-                alert("Token não encontrado.");
-            }
-        }
-        catch (error) {
-            alert("Email e/ou Senha Inválidos.");
-        }
-
+        //         alert("Login Realizado com Sucesso!");
+        //     } else {
+        //         alert("Token não encontrado.");
+        //     }
+        // }
+        // catch (error) {
+        //     alert("Email e/ou Senha Inválidos.");
+        // }
+        await login(email, password);
     };
 
     const handleGoCadastro = () => {
