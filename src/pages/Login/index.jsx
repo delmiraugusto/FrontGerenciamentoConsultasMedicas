@@ -33,18 +33,6 @@ export default function Login() {
         setShowPassword(!showPassword);
     };
 
-    function changeFontSize(action) {
-        const elements = ["h1, h2"];
-        elements.map((element) => {
-            const selector = document.querySelector(element);
-            let value = getComputedStyle(selector).getPropertyValue("font-size");
-            value = value.replace("px", "");
-            value = action === "aumentar" ? parseInt(value) + 2 : parseInt(value) - 2;
-            document.querySelector(element).style.fontSize = `${value}px`;
-        });
-    }
-
-
     const handlePasswordButton = (
         <a onClick={handlePasswordToggle} >
             {showPassword ? (
@@ -101,30 +89,6 @@ export default function Login() {
     return (
         <Container>
             <Imagem src={foto} alt="icon_Hospital" />
-            <AccessibilityContainer>
-                <Accessibility
-                    aria-label="botao contraste"
-                    tabIndex="5"
-                    type="button"
-                    onClick={switchTheme} >
-                    <MdContrast size={28} />
-                </Accessibility>
-                <Accessibility
-                    aria-label="botao aumentar"
-                    tabIndex="6"
-                    type="button"
-                    onClick={() => changeFontSize("aumentar")}>
-                    <MdOutlineTextIncrease size={28} />
-                </Accessibility>
-                <Accessibility
-                    aria-label="botao diminuir"
-                    tabIndex="7"
-                    type="button"
-                    onClick={() => changeFontSize("diminuir")}>
-                    <MdOutlineTextDecrease size={28} />
-                </Accessibility>
-            </AccessibilityContainer >
-
             <Forme onSubmit={handleLogin}>
                 <Logo src={foto} alt="icon_Hospital" />
                 <Titulo>Gerenciamento de Consultas</Titulo>

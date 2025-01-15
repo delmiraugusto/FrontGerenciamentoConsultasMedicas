@@ -36,6 +36,12 @@ export default function AgendamentoConsulta() {
         setFormData({ ...formData, [name]: value });
     };
 
+    const isValidDateTime = (dateTime) => {
+        const currentDateTime = new Date();
+        const selectedDateTime = new Date(dateTime);
+        return selectedDateTime > currentDateTime;
+    };
+
     const handleSubmit = async (e) => {
         e.preventDefault();
 
@@ -48,8 +54,17 @@ export default function AgendamentoConsulta() {
 
         if (Object.keys(newErrors).length > 0) return;
 
+        if (!isValidDateTime(formData.dateTimeQuery)) {
+            setErrors((prevErrors) => ({
+                ...prevErrors,
+                dateTimeQuery: 'A data e hora não podem ser no passado.',
+            }));
+            return;
+        }
+
         const [date, time] = formData.dateTimeQuery.split('T');
         const formattedDateTime = `${date}T${time}:00`;
+
         const appointmentData = {
             description: formData.description,
             dateTimeQuery: formattedDateTime,
@@ -60,6 +75,7 @@ export default function AgendamentoConsulta() {
         try {
             await apiService.addConsult(appointmentData);
             alert('Consulta agendada com sucesso!');
+            navigate('/homePaciente');
         } catch (error) {
             console.error('Erro ao agendar consulta:', error);
             alert('Erro ao agendar consulta. Tente novamente.');
