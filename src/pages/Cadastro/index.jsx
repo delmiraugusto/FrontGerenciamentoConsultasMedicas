@@ -1,6 +1,7 @@
-import React, { useState, useEffect } from 'react';
+import { useState } from 'react';
+import { Form, Button } from 'react-bootstrap';
+import apiService from '../../api/api';
 import { useNavigate } from 'react-router-dom';
-import jwt_decode from 'jwt-decode';
 import {
     Container,
     FormWrapper,
@@ -8,131 +9,166 @@ import {
     InputGroup,
     Label,
     Input,
-    CustomButton,
-    BackButton,
+    CheckboxWrapper,
     ErrorText,
+    CustomButton,
+    BackButton
 } from './style';
-import apiService from '../../api/api';
 
-export default function AgendamentoConsulta() {
+export default function Cadastro() {
     const [formData, setFormData] = useState({
-        description: '',
-        dateTimeQuery: '',
-        id_doctor: '',
+        name: '',
+        cpf: '',
+        telephone: '',
+        email: '',
+        password: '',
+        crm: '',
+        specialty: '',
+        age: '',
+        role: '',
     });
-    const [doctors, setDoctors] = useState([]);
     const [errors, setErrors] = useState({});
     const navigate = useNavigate();
 
-    // Obter o ID do paciente do token
-    const token = localStorage.getItem('token');
-    const decodedToken = jwt_decode(token);
-    const id_patient = decodedToken?.nameid;
-
-    // Carregar a lista de médicos
-    useEffect(() => {
-        const fetchDoctors = async () => {
-            try {
-                const response = await apiService.getAllDoctors();
-                setDoctors(response.data);
-            } catch (error) {
-                console.error('Erro ao carregar médicos:', error);
-                alert('Erro ao carregar a lista de médicos. Tente novamente mais tarde.');
-            }
-        };
-
-        fetchDoctors();
-    }, []);
-
-    // Atualizar estado com valores do formulário
     const handleChange = (e) => {
         const { name, value } = e.target;
         setFormData({ ...formData, [name]: value });
     };
+    const validate = () => {
+        const newErrors = {};
+        if (!formData.name) newErrors.name = 'O campo nome é obrigatório';
+        if (!formData.cpf || formData.cpf.length !== 11) newErrors.cpf = 'O CPF deve ter 11 dígitos';
+        if (!formData.telephone) newErrors.telephone = 'O campo Número é obrigatório';
+        if (!formData.email) newErrors.email = 'O campo Email é obrigatório';
+        if (!formData.password || formData.password.length < 8) newErrors.password = 'A senha deve ter no mínimo 8 caracteres';
+        if (!formData.role) newErrors.role = 'É obrigatório escolher Médico ou Paciente';
+        if (formData.role === 'Medico') {
+            if (!formData.crm || formData.crm.length < 4 || formData.crm.length > 6) {
+                newErrors.crm = 'O CRM deve ter entre 4 e 6 caracteres';
+            }
+            if (!formData.specialty) {
+                newErrors.specialty = 'O campo Especialidade é obrigatório';
+            }
+        }
 
-    // Submeter formulário
+        if (formData.role === 'Paciente') {
+            if (!formData.age) newErrors.age = 'O campo idade é obrigatório';
+        }
+
+        setErrors(newErrors);
+        return Object.keys(newErrors).length === 0;
+    };
+
     const handleSubmit = async (e) => {
         e.preventDefault();
+        if (!validate()) return;
 
-        // Validação dos campos
-        const newErrors = {};
-        if (!formData.description) newErrors.description = 'Descrição é obrigatória.';
-        if (!formData.dateTimeQuery) newErrors.dateTimeQuery = 'Data e hora são obrigatórias.';
-        if (!formData.id_doctor) newErrors.id_doctor = 'Escolha um médico.';
-        setErrors(newErrors);
+        const filteredFormData = { ...formData };
 
-        if (Object.keys(newErrors).length > 0) return;
+        if (formData.role === 'Medico') {
+            delete filteredFormData.age;
+        } else if (formData.role === 'Paciente') {
+            delete filteredFormData.crm;
+            delete filteredFormData.specialty;
+        }
 
-        // Converter a data e hora para o formato ISO
         try {
-            const [date, time] = formData.dateTimeQuery.split(' ');
-            const [day, month, year] = date.split('-');
-            const formattedDateTime = `${year}-${month}-${day}T${time}:00`;
-
-            const appointmentData = {
-                description: formData.description,
-                dateTimeQuery: formattedDateTime,
-                id_patient,
-                id_doctor: formData.id_doctor,
-            };
-
-            // Enviar dados para a API
-            await apiService.addConsult(appointmentData);
-            alert('Consulta agendada com sucesso!');
-            navigate('/');
+            const response = await apiService.signUp(filteredFormData);
+            alert('Cadastro realizado com sucesso!');
+            setTimeout(() => {
+                window.location.href = "/";
+            }, 1000);
         } catch (error) {
-            console.error('Erro ao agendar consulta:', error);
-            alert('Erro ao agendar consulta. Tente novamente.');
+            console.error(error);
+            if (error.response && error.response.data) {
+                const errorMessage = error.response.data;
+                if (errorMessage.includes("Email") || errorMessage.includes("CPF")) {
+                    alert(`Erro: ${errorMessage}`);
+                } else {
+                    alert(`Erro: ${errorMessage}`);
+                }
+            } else {
+                alert('Erro ao realizar cadastro. Tente novamente mais tarde.');
+            }
         }
     };
 
     return (
         <Container>
             <FormWrapper onSubmit={handleSubmit}>
-                <Title>Agendar Consulta</Title>
+                <Title>Cadastro</Title>
+                <InputGroup>
+                    <Label>Nome *</Label>
+                    <Input name="name" value={formData.name} onChange={handleChange} />
+                    {errors.name && <ErrorText>{errors.name}</ErrorText>}
+                </InputGroup>
+                <InputGroup>
+                    <Label>CPF *</Label>
+                    <Input name="cpf" value={formData.cpf} onChange={handleChange} maxLength={11} />
+                    {errors.cpf && <ErrorText>{errors.cpf}</ErrorText>}
+                </InputGroup>
 
                 <InputGroup>
-                    <Label>Descrição *</Label>
-                    <Input
-                        name="description"
-                        value={formData.description}
+                    <Label>Telefone *</Label>
+                    <Input name="telephone" value={formData.telephone} onChange={handleChange} />
+                    {errors.telephone && <ErrorText>{errors.telephone}</ErrorText>}
+                </InputGroup>
+
+                <InputGroup>
+                    <Label>Email *</Label>
+                    <Input name="email" value={formData.email} onChange={handleChange} />
+                    {errors.email && <ErrorText>{errors.email}</ErrorText>}
+                </InputGroup>
+
+                <InputGroup>
+                    <Label>Senha *</Label>
+                    <Input type="password" name="password" value={formData.password} onChange={handleChange} />
+                    {errors.password && <ErrorText>{errors.password}</ErrorText>}
+                </InputGroup>
+                <CheckboxWrapper>
+                    <Form.Check
+                        inline
+                        label="Médico"
+                        type="radio"
+                        name="role"
+                        value="Medico"
                         onChange={handleChange}
-                        placeholder="Informe a descrição da consulta"
                     />
-                    {errors.description && <ErrorText>{errors.description}</ErrorText>}
-                </InputGroup>
-
-                <InputGroup>
-                    <Label>Data e Hora (dd-MM-yyyy HH:mm) *</Label>
-                    <Input
-                        name="dateTimeQuery"
-                        value={formData.dateTimeQuery}
+                    <Form.Check
+                        inline
+                        label="Paciente"
+                        type="radio"
+                        name="role"
+                        value="Paciente"
                         onChange={handleChange}
-                        placeholder="Exemplo: 15-01-2025 14:30"
                     />
-                    {errors.dateTimeQuery && <ErrorText>{errors.dateTimeQuery}</ErrorText>}
-                </InputGroup>
-
-                <InputGroup>
-                    <Label>Médico *</Label>
-                    <select
-                        name="id_doctor"
-                        value={formData.id_doctor}
-                        onChange={handleChange}
-                    >
-                        <option value="">Selecione um médico</option>
-                        {doctors.map((doctor) => (
-                            <option key={doctor.id} value={doctor.id}>
-                                {doctor.name}
-                            </option>
-                        ))}
-                    </select>
-                    {errors.id_doctor && <ErrorText>{errors.id_doctor}</ErrorText>}
-                </InputGroup>
+                </CheckboxWrapper>
+                {errors.role && <ErrorText>{errors.role}</ErrorText>}
+                {formData.role === 'Medico' && (
+                    <>
+                        <InputGroup>
+                            <Label>CRM *</Label>
+                            <Input name="crm" value={formData.crm} onChange={handleChange} />
+                            {errors.crm && <ErrorText>{errors.crm}</ErrorText>}
+                        </InputGroup>
+                        <InputGroup>
+                            <Label>Especialidade *</Label>
+                            <Input name="specialty" value={formData.specialty} onChange={handleChange} />
+                            {errors.specialty && <ErrorText>{errors.specialty}</ErrorText>}
+                        </InputGroup>
+                    </>
+                )}
+                {formData.role === 'Paciente' && (
+                    <InputGroup>
+                        <Label>Idade *</Label>
+                        <Input name="age" value={formData.age} onChange={handleChange} />
+                        {errors.age && <ErrorText>{errors.age}</ErrorText>}
+                    </InputGroup>
+                )}
 
                 <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                    <BackButton onClick={() => navigate('/')}>Voltar</BackButton>
-                    <CustomButton type="submit">Agendar</CustomButton>
+                    <BackButton onClick={() => navigate("/")}>Voltar</BackButton>
+                    <CustomButton type="submit">Cadastrar</CustomButton>
                 </div>
             </FormWrapper>
         </Container>

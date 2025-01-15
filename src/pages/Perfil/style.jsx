@@ -73,9 +73,9 @@ export const Button = styled.button`
   transition: background-color 0.3s;
 
   &:disabled {
-    background-color: #ccc; /* Cor cinza */
-    cursor: not-allowed;   /* Cursor indicando que o botão está desativado */
-    color: #666;           /* Cor do texto */
+    background-color: #ccc;
+    cursor: not-allowed; 
+    color: #666;
   }
 
   &.back {
