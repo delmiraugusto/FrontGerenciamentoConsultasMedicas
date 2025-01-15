@@ -3,7 +3,7 @@ import styled from 'styled-components';
 export const Container = styled.div`
     display: flex;
     justify-content: space-between;
-    background-color: #d6d8da;
+    background-color: #f8f9fa;
     padding: 20px;
     gap: 20px;
     height: 100vh;
@@ -13,11 +13,12 @@ export const Column = styled.div`
     flex: 1;
     display: flex;
     flex-direction: column;
-    background-color: #eff0f1;
+    background-color: #ffffff;
     border: 1px solid #dee2e6;
-    border-radius: 5px;
+    border-radius: 10px;
     padding: 20px;
     overflow-y: auto;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
 `;
 
 export const Header = styled.h2`
@@ -35,14 +36,34 @@ export const List = styled.div`
 export const ListItem = styled.div`
     padding: 15px;
     border: 1px solid #ced4da;
-    border-radius: 5px;
+    border-radius: 10px;
     background-color: #ffffff;
-    box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
 `;
 
 export const Button = styled.button`
     margin-top: 10px;
-    padding: 10px 15px;
+    padding: 12px 20px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 14px;
+    transition: background-color 0.3s ease;
+    width: 100%;
+
+    &:hover {
+        opacity: 0.9;
+    }
+
+    &:disabled {
+        cursor: not-allowed;
+        background-color: #d3d3d3;
+    }
+`;
+
+export const ButtonModal = styled.button`
+    margin-top: 10px;
+    width: 10rem;
     color: white;
     border: none;
     border-radius: 5px;
@@ -90,50 +111,54 @@ export const Input = styled.input`
     }
 `;
 
-export const Sidebar = styled.div`
-    width: 250px;
-    background-color: #013d32;
-    color: white;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    padding: 20px;
-    gap: 20px;
-    position: fixed;
-    height: 100%;
-    top: 0;
-    left: 0;
+export const Label = styled.label`
+    font-size: 14px;
+    color: #343a40;
+    margin-bottom: 5px;
+    display: block;
 `;
 
-export const UserName = styled.h2`
-    font-size: 18px;
-    color: #ffffff;
-    text-align: center;
+export const InputGroup = styled.div`
+    display: flex;
+    flex-direction: column;
     margin-bottom: 20px;
 `;
 
-export const SidebarButton = styled.button`
-    width: 80%;
-    padding: 10px 15px;
-    background-color: white;
-    color: #013d32;
-    border: none;
-    border-radius: 5px;
-    font-size: 16px;
-    cursor: pointer;
-    transition: all 0.3s ease;
+export const ButtonContainer = styled.div`
+    display: flex;
+    justify-content: space-between;
+    gap: 10px;
+    margin-top: 20px;
+`;
 
+export const EditButton = styled(Button)`
+    background-color: #ffca2c;
+    color: black;
+    width: 10rem;
     &:hover {
-        background-color: #0d5e42;
-        color: white;
+        background-color: #e0a800;
     }
+`;
 
-    &:last-of-type {
-        background-color: #fa5a54;
-        color: white;
-
-        &:hover {
-            background-color: #c03e3b;
-        }
+export const SaveButton = styled(Button)`
+    background-color: #28a745;
+    color: white;
+    &:hover {
+        background-color: #218838;
     }
+`;
+
+export const CancelButton = styled(Button)`
+    background-color: #fa5a54;
+    color: white;
+    &:hover {
+        background-color: #e03a3a;
+    }
+`;
+
+export const EmptyMessage = styled.p`
+    text-align: center;
+    color: #6c757d;
+    font-size: 16px;
+    margin-top: 20px;
 `;

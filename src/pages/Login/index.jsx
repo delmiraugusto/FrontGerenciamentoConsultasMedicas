@@ -89,7 +89,7 @@ export default function Login() {
             }
         }
         catch (error) {
-            alert("Email ou Senha Inválidos.");
+            alert("Email e/ou Senha Inválidos.");
         }
 
     };

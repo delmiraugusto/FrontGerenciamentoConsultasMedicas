@@ -54,8 +54,4 @@ export const NavButton = styled.button`
         background-color: #3D3D3D;
         color: white;
     }
-
-    &.logout:hover {
-        background-color: #fe4039;
-    }
 `;

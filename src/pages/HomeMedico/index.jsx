@@ -1,22 +1,37 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Container, HeaderWrapper, NavButton } from './style';
 import { useNavigate } from 'react-router-dom';
 import jwt_decode from 'jwt-decode';
+import apiService from '../../api/api';
 
 export default function MedicoHome() {
     const navigate = useNavigate();
 
-    const getMedicoName = () => {
-        const token = localStorage.getItem('token');
-        console.log('token:', token);
+    const [medicoName, setMedicoName] = useState('');
 
-        if (token) {
-            const decodedToken = jwt_decode(token);
-            console.log('Decoded Token:', decodedToken);
-            return decodedToken.unique_name || 'Médico(a)';
-        }
-        return 'Médico(a)';
-    };
+    useEffect(() => {
+        const fetchMedicoName = async () => {
+            try {
+                const token = localStorage.getItem('token');
+                const decodedToken = jwt_decode(token);
+                const userId = decodedToken?.nameid;
+
+                if (userId) {
+                    const response = await apiService.getDoctorById(userId);
+                    const name = response.data.name;
+
+                    setMedicoName(name);
+                } else {
+                    setMedicoName('Medico');
+                }
+            } catch (error) {
+                console.error('Erro ao buscar o nome do médico:', error);
+                setMedicoName('Medico');
+            }
+        };
+
+        fetchMedicoName();
+    }, []);
 
     const handleNavigate = (path) => {
         navigate(path);
@@ -30,7 +45,7 @@ export default function MedicoHome() {
     return (
         <Container>
             <HeaderWrapper>
-                <h1>Bem-vindo(a), Dr(a) {getMedicoName()}</h1>
+                <h1>Bem-vindo(a), Dr(a) {medicoName}</h1>
                 <div>
                     <NavButton onClick={() => handleNavigate('/visualizar-consulta')}>
                         Visualizar Consultas

@@ -1,18 +1,20 @@
 import React, { useEffect, useState } from 'react';
-import { Container, Column, Header, List, ListItem, Button, Modal, Input, Overlay } from './style';
+import {
+    Container, Column, Header, List, ListItem, Button, Modal, Input, Overlay, EditButton, ButtonModal,
+} from './style';
 import apiService from '../../api/api';
 import jwt_decode from 'jwt-decode';
 import moment from 'moment';
 import { useNavigate } from 'react-router-dom';
 
-export default function VisualizarConsultas() {
+export default function VisualizarConsultasPaciente() {
     const [consultasAgendadas, setConsultasAgendadas] = useState([]);
     const [historicoConsultas, setHistoricoConsultas] = useState([]);
     const [selectedConsulta, setSelectedConsulta] = useState(null);
     const [modalOpen, setModalOpen] = useState(false);
     const navigate = useNavigate();
 
-    const getDoctorIdFromToken = () => {
+    const getPatientIdFromToken = () => {
         const token = localStorage.getItem('token');
         if (token) {
             const decodedToken = jwt_decode(token);
@@ -23,14 +25,14 @@ export default function VisualizarConsultas() {
 
     useEffect(() => {
         const fetchConsultas = async () => {
-            const doctorId = getDoctorIdFromToken();
-            if (!doctorId) {
-                console.error("Doctor ID não encontrado no token.");
+            const patientId = getPatientIdFromToken();
+            if (!patientId) {
+                console.error('Paciente ID não encontrado no token.');
                 return;
             }
 
             try {
-                const response = await apiService.getConsultByDoctor(doctorId);
+                const response = await apiService.getConsultByPatient(patientId);
                 const todasConsultas = response.data;
                 const agora = moment();
 
@@ -45,7 +47,7 @@ export default function VisualizarConsultas() {
                 setConsultasAgendadas(futuras);
                 setHistoricoConsultas(todasConsultas);
             } catch (error) {
-                console.error("Erro ao buscar consultas:", error);
+                console.error('Erro ao buscar consultas:', error);
             }
         };
 
@@ -53,38 +55,25 @@ export default function VisualizarConsultas() {
     }, []);
 
     const getStatus = (consulta) => {
-        if (consulta.isCanceled) return "Cancelada";
+        if (consulta.isCanceled) return 'Cancelada';
         const agora = moment();
         const dataConsulta = moment(consulta.dateTimeQuery, 'DD-MM-YYYY HH:mm:ss');
-        return dataConsulta.isBefore(agora) ? "Concluída" : "Agendada";
+        return dataConsulta.isBefore(agora) ? 'Concluída' : 'Agendada';
     };
 
     const handleEditClick = (consulta) => {
         setSelectedConsulta({ ...consulta });
         setModalOpen(true);
+        console.log(modalOpen)
     };
 
     const handleSave = async () => {
-        const { id, description, dateTimeQuery } = selectedConsulta;
+        const { id, description } = selectedConsulta;
 
-        const inputMoment = moment(dateTimeQuery, 'DD-MM-YYYY HH:mm:ss', true);
-
-        if (!inputMoment.isValid()) {
-            alert('A data informada não é válida. Por favor, insira uma data no formato correto (DD-MM-YYYY HH:mm:ss).');
-            return;
-        }
-
-        if (inputMoment.isBefore(moment(), 'minute')) {
-            alert('Não é permitido editar para uma data no passado.');
-            return;
-        }
 
         const payload = {
             id,
-            ...(description && { description }),
-            ...(dateTimeQuery && {
-                dateTimeQuery: inputMoment.format('YYYY-MM-DDTHH:mm'),
-            }),
+            ...(description && { description })
         };
 
         try {
@@ -99,7 +88,7 @@ export default function VisualizarConsultas() {
                 const novaData = moment(payload.dateTimeQuery);
                 return prev.map((consulta) =>
                     consulta.id === id
-                        ? { ...consulta, ...payload, dateTimeQuery: novaData.format('DD-MM-YYYY HH:mm:ss') }
+                        ? { ...consulta, ...payload }
                         : consulta
                 ).filter(
                     (consulta) =>
@@ -122,13 +111,42 @@ export default function VisualizarConsultas() {
         }
     };
 
+    const handleCancel = async () => {
+        if (!selectedConsulta) return;
+        const confirmCancel = window.confirm('Tem certeza que deseja cancelar esta consulta?');
+        if (!confirmCancel) return;
+
+        try {
+            await apiService.deleteConsult(selectedConsulta.id);
+
+            alert('Consulta cancelada com sucesso!');
+            setModalOpen(false);
+            setSelectedConsulta(null);
+
+            setConsultasAgendadas((prev) =>
+                prev.filter((consulta) => consulta.id !== selectedConsulta.id)
+            );
+
+            setHistoricoConsultas((prev) =>
+                prev.map((consulta) =>
+                    consulta.id === selectedConsulta.id
+                        ? { ...consulta, isCanceled: true }
+                        : consulta
+                )
+            );
+        } catch (error) {
+            console.error('Erro ao cancelar consulta:', error);
+            alert('Ocorreu um erro ao cancelar a consulta. Tente novamente.');
+        }
+    };
+
     const handleCloseModal = () => {
         setModalOpen(false);
         setSelectedConsulta(null);
     };
 
     const handleBack = () => {
-        navigate('/homeMedico');
+        navigate('/homePaciente');
     };
 
     const handleLogout = () => {
@@ -139,7 +157,7 @@ export default function VisualizarConsultas() {
     return (
         <Container>
             <div style={{ marginBottom: '20px', textAlign: 'left', display: 'flex', flexDirection: 'column', gap: '10px' }}>
-                <Button onClick={handleBack} style={{ backgroundColor: '#013d32' }}>
+                <Button onClick={handleBack} style={{ backgroundColor: '#013d32', color: 'white' }}>
                     Voltar para Perfil
                 </Button>
                 <Button onClick={handleLogout} style={{ backgroundColor: '#fa5a54' }}>
@@ -154,14 +172,20 @@ export default function VisualizarConsultas() {
                             <ListItem key={consulta.id}>
                                 <p><strong>Descrição:</strong> {consulta.description}</p>
                                 <p><strong>Data e Hora:</strong> {consulta.dateTimeQuery}</p>
-                                <p><strong>Paciente:</strong> {consulta.patientName}</p>
-                                <p><strong>Idade:</strong> {consulta.patientAge}</p>
-                                <p><strong>Telefone:</strong> {consulta.patientTelephone}</p>
-                                <Button style={{ backgroundColor: '#ffca2c', color: 'black' }} onClick={() => handleEditClick(consulta)}>Editar Consulta</Button>
+                                <p><strong>Médico(a):</strong> {consulta.doctorName}</p>
+                                <p><strong>Telefone Médico:</strong> {consulta.doctorTelephone}</p>
+                                <p><strong>Especialidade:</strong> {consulta.doctorSpecialty}</p>
+                                <p><strong>Status:</strong> <span style={{ color: getStatus(consulta) === 'Cancelada' ? 'red' : getStatus(consulta) === 'Concluída' ? 'green' : 'orange' }}>{getStatus(consulta)}</span></p>
+                                <EditButton
+                                    disabled={consulta.isCanceled}
+                                    onClick={() => handleEditClick(consulta)}
+                                >
+                                    Editar Consulta
+                                </EditButton>
                             </ListItem>
                         ))
                     ) : (
-                        <p>Não há Nenhuma Consulta Agendada para você, doutor.</p>
+                        <p>Você ainda não agendou nenhuma consulta.</p>
                     )}
                 </List>
             </Column>
@@ -173,42 +197,27 @@ export default function VisualizarConsultas() {
                             <ListItem key={consulta.id}>
                                 <p><strong>Descrição:</strong> {consulta.description}</p>
                                 <p><strong>Data e Hora:</strong> {consulta.dateTimeQuery}</p>
-                                <p><strong>Paciente:</strong> {consulta.patientName}</p>
-                                <p><strong>Idade:</strong> {consulta.patientAge}</p>
-                                <p><strong>Telefone:</strong> {consulta.patientTelephone}</p>
-                                <p>
-                                    <strong>Status:</strong>{' '}
-                                    <strong
-                                        style={{
-                                            color:
-                                                getStatus(consulta) === 'Concluída'
-                                                    ? '#013229'
-                                                    : getStatus(consulta) === 'Agendada'
-                                                        ? '#d1a00d'
-                                                        : getStatus(consulta) === 'Cancelada'
-                                                            ? '#fa5a54'
-                                                            : '#000',
-                                        }}
-                                    >
-                                        {getStatus(consulta)}
-                                    </strong>
-                                </p>
+                                <p><strong>Médico(a):</strong> {consulta.doctorName}</p>
+                                <p><strong>Telefone Médico:</strong> {consulta.doctorTelephone}</p>
+                                <p><strong>Especialidade:</strong> {consulta.doctorSpecialty}</p>
+                                <p><strong>Status:</strong> <span style={{ color: getStatus(consulta) === 'Cancelada' ? 'red' : getStatus(consulta) === 'Concluída' ? 'green' : 'orange' }}>{getStatus(consulta)}</span></p>
                             </ListItem>
                         ))
                     ) : (
-                        <p>Histórico vazio, nenhuma consulta chegou a ser agendada.</p>
+                        <p>Não há nada para mostrar, não teve nenhuma consulta.</p>
                     )}
                 </List>
             </Column>
             {modalOpen && (
                 <>
                     <Overlay />
-                    <Modal style={{ width: '50%', padding: '20px', margin: '0 auto' }}>
+                    <Modal style={{ width: '50%', padding: '20px', margin: '0 auto' }} isOpen={modalOpen}>
                         <h2 style={{ textAlign: 'center' }}>Editar Consulta</h2>
                         <label style={{ display: 'block', margin: '10px 0' }}>
                             Descrição:
                             <Input
-                                value={selectedConsulta.description}
+                                type="text"
+                                value={selectedConsulta?.description || ''}
                                 onChange={(e) => setSelectedConsulta({ ...selectedConsulta, description: e.target.value })}
                                 style={{
                                     width: '100%',
@@ -218,77 +227,52 @@ export default function VisualizarConsultas() {
                                 }}
                             />
                         </label>
-                        <label style={{ display: 'block', margin: '10px 0' }}>
-                            Data e Hora:
-                            <Input
-                                type="text"
-                                value={selectedConsulta.dateTimeQuery || ''}
-                                placeholder="DD-MM-YYYY HH:mm:ss"
-                                onChange={(e) => {
-                                    const inputValue = e.target.value;
-                                    setSelectedConsulta({
-                                        ...selectedConsulta,
-                                        dateTimeQuery: inputValue,
-                                    });
-                                }}
+                        <label style={{ display: 'block', margin: '10px 0' }}>Data e Hora
+                            <Input value={selectedConsulta.dateTimeQuery} disabled
                                 style={{
                                     width: '100%',
                                     padding: '10px',
                                     marginTop: '5px',
                                     fontSize: '16px',
-                                }}
-                            />
+                                }} />
                         </label>
-                        <label style={{ display: 'block', margin: '10px 0' }}>
-                            Paciente:
-                            <Input
-                                value={selectedConsulta.patientName}
-                                disabled
+                        <label style={{ display: 'block', margin: '10px 0' }}>Médico(a)
+                            <Input type="text" value={selectedConsulta.doctorName} disabled
                                 style={{
                                     width: '100%',
                                     padding: '10px',
                                     marginTop: '5px',
                                     fontSize: '16px',
-                                }}
-                            />
+                                }} />
                         </label>
-                        <label style={{ display: 'block', margin: '10px 0' }}>
-                            Idade:
-                            <Input
-                                value={selectedConsulta.patientAge}
-                                disabled
+                        <label style={{ display: 'block', margin: '10px 0' }}>Telefone Médico
+                            <Input type="text" value={selectedConsulta.doctorTelephone} disabled
                                 style={{
                                     width: '100%',
                                     padding: '10px',
                                     marginTop: '5px',
                                     fontSize: '16px',
-                                }}
-                            />
+                                }} />
                         </label>
-                        <label style={{ display: 'block', margin: '10px 0' }}>
-                            Telefone:
-                            <Input
-                                value={selectedConsulta.patientTelephone}
-                                disabled
+                        <label style={{ display: 'block', margin: '10px 0' }}>Especialidade
+                            <Input type="text" value={selectedConsulta.doctorSpecialty} disabled
                                 style={{
                                     width: '100%',
                                     padding: '10px',
                                     marginTop: '5px',
                                     fontSize: '16px',
-                                }}
-                            />
+                                }} />
                         </label>
                         <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: '20px' }}>
-                            <Button onClick={handleCloseModal} style={{ backgroundColor: '#3D3D3D', width: '10rem' }}>
+                            <ButtonModal onClick={handleCloseModal} style={{ backgroundColor: '#3D3D3D', width: '10rem' }}>
                                 Voltar
-                            </Button>
-                            <Button onClick={handleSave} style={{ backgroundColor: '#013d32', width: '10rem' }}>
-                                Salvar
-                            </Button>
+                            </ButtonModal>
+                            <ButtonModal onClick={handleSave} style={{ backgroundColor: '#013d32', width: '10rem' }}>Salvar</ButtonModal>
+                            <ButtonModal onClick={handleCancel} style={{ backgroundColor: '#fa5a54', width: '10rem' }}>Cancelar Consulta</ButtonModal>
                         </div>
                     </Modal>
                 </>
             )}
-        </Container>
+        </Container >
     );
 }
