@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import {
-    Container, Column, Header, List, ListItem, Button, Modal, Input, Overlay, EditButton, ButtonModal,
+    Container, Column, Header, List, ListItem, Button, Modal, Input, Overlay, EditButton, ButtonModal, FilterContainer
 } from './style';
 import apiService from '../../api/api';
 import jwt_decode from 'jwt-decode';
@@ -12,6 +12,7 @@ export default function VisualizarConsultasPaciente() {
     const [historicoConsultas, setHistoricoConsultas] = useState([]);
     const [selectedConsulta, setSelectedConsulta] = useState(null);
     const [modalOpen, setModalOpen] = useState(false);
+    const [filterStatus, setFilterStatus] = useState('');
     const navigate = useNavigate();
 
     const getPatientIdFromToken = () => {
@@ -145,6 +146,16 @@ export default function VisualizarConsultasPaciente() {
         setSelectedConsulta(null);
     };
 
+    const filteredConsultas = historicoConsultas.filter((consulta) => {
+        const status = getStatus(consulta);
+        return filterStatus === '' || status === filterStatus;
+    });
+
+
+    const handleFilterChange = (e) => {
+        setFilterStatus(e.target.value);
+    };
+
     const handleBack = () => {
         navigate('/homePaciente');
     };
@@ -175,7 +186,7 @@ export default function VisualizarConsultasPaciente() {
                                 <p><strong>Médico(a):</strong> {consulta.doctorName}</p>
                                 <p><strong>Telefone Médico:</strong> {consulta.doctorTelephone}</p>
                                 <p><strong>Especialidade:</strong> {consulta.doctorSpecialty}</p>
-                                <p><strong>Status:</strong> <span style={{ color: getStatus(consulta) === 'Cancelada' ? 'red' : getStatus(consulta) === 'Concluída' ? 'green' : 'orange' }}>{getStatus(consulta)}</span></p>
+                                <p><strong>Status:</strong> <span style={{ color: getStatus(consulta) === 'Cancelada' ? '#fa5a54' : getStatus(consulta) === 'Concluída' ? '#013229' : '#d1a00d' }}>{getStatus(consulta)}</span></p>
                                 <EditButton
                                     disabled={consulta.isCanceled}
                                     onClick={() => handleEditClick(consulta)}
@@ -191,9 +202,18 @@ export default function VisualizarConsultasPaciente() {
             </Column>
             <Column>
                 <Header>Histórico de Consultas</Header>
+                <FilterContainer>
+                    <h5>Filtrar por status:</h5>
+                    <select value={filterStatus} onChange={handleFilterChange}>
+                        <option value="">Todos</option>
+                        <option value="Concluída">Concluída</option>
+                        <option value="Cancelada">Cancelada</option>
+                        <option value="Agendada">Agendada</option>
+                    </select>
+                </FilterContainer>
                 <List>
                     {historicoConsultas.length > 0 ? (
-                        historicoConsultas.map((consulta) => (
+                        filteredConsultas.map((consulta) => (
                             <ListItem key={consulta.id}>
                                 <p><strong>Descrição:</strong> {consulta.description}</p>
                                 <p><strong>Data e Hora:</strong> {consulta.dateTimeQuery}</p>

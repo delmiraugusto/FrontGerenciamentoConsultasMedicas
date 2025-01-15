@@ -162,3 +162,21 @@ export const EmptyMessage = styled.p`
     font-size: 16px;
     margin-top: 20px;
 `;
+
+export const FilterContainer = styled.div`
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-top: 10px;
+
+    label {
+        font-size: 14px;
+    }
+
+    select {
+        font-size: 14px;
+        padding: 5px 10px;
+        border-radius: 5px;
+        border: 1px solid #ddd;
+    }
+`;
