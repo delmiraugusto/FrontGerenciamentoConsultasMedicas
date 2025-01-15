@@ -26,12 +26,17 @@ Bônus (Diferencial):
 │   ├── Api/                           # Pasta de componentes de aplicação do projeto
 │   │  ├── Api.jsx/                    # Configuração dos endpoints da Api
 │   ├── Assets/                        # Fotos do projeto
+│   ├── context/                       # Componentes de Contexto
+│   │  ├──AuthContext                  # Lógica da AutenticaçãO
+│   │  ├──privateRoutes                # Rotas Privadas
 │   ├── Pages/                         # Páginas do projeto
 │   │  ├──AgendamentoConsulta          # Página de Agendamento de Consultas
 │   │  ├──Cadastro                     # Cadastro de Médico ou Paciente
 │   │  ├──HomeMedico                   # Página Home do Médico
 │   │  ├──HomePaciente                 # Página Home do Paciente
 │   │  ├──Login                        # Página de Login
+│   │  ├──AgendamentoConsulta          # Página de Não Autenticado
+│   │  ├──NotFound                     # Página de Não Encontrada
 │   │  ├──Perfil                       # Página de Perfil para Editar/Visualizar os Dados, tanto de Médico quanto Paciente
 │   │  ├──VisualizarConsultasMedico    # Página para Médico Visualizar as Consultas
 │   │  ├──VisualizarConsultasPaciente  # Página para Paciente Visualizar as Consulta
